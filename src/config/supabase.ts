@@ -1,9 +1,14 @@
-import "dotenv/config"
-import {createClient} from "@supabase/supabase-js"
+import "dotenv/config";
+import { createClient } from "@supabase/supabase-js";
+import { env } from "./env";
 
-const supabaseUrl = process.env.SUPABASE_URL
-if(!supabaseUrl) throw new Error("Env error : SUPABASE_URL manquant")
-const supabaseAnonKey = process.env.SUPABASE_ANON_KEY
-if(!supabaseAnonKey) throw new Error("Env error : Supabase ANON KEY manquant")
+const supabaseUrl = env.SUPABASE_URL;
+const supabaseAnonKey = env.SUPABASE_ANON_KEY;
 
-const supabase = createClient(supabaseUrl, supabaseAnonKey)
+export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
+export const createSupabaseUserClient = (accessToken: string) => {
+  return createClient(supabaseUrl, supabaseAnonKey, {
+    global: { headers: { Authorization: `Bearer ${accessToken}` } },
+  });
+};

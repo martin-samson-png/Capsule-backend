@@ -4,20 +4,22 @@ import { AppError } from "../error/AppError";
 
 export const requireAuth = async (
   req: Request,
-  res: Response,
+  _res: Response,
   next: NextFunction,
 ) => {
   try {
+    const authHeader = req.headers.authorization;
+    if (!authHeader?.startsWith("Bearer "))
+      return next(AppError.unauthorized("Token manquant"));
     const token = req.headers.authorization?.split(" ")[1];
-    if (!token) res.status(401).json({ error: "Token inextistant" });
     const { data, error } = await supabase.auth.getUser(token);
-
     if (!data || error) {
-      throw AppError.unauthorized("Token manquant");
+      return next(AppError.unauthorized("Token manquant ou expiré"));
     }
-
-    next();
-  } catch {
-    next();
+    req.userId = data.user.id;
+    req.accessToken = token;
+    return next();
+  } catch (err) {
+    return next(err);
   }
 };
