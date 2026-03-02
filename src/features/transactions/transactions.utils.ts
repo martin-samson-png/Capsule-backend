@@ -1,5 +1,15 @@
 import { SupabaseClient } from "@supabase/supabase-js";
 import { AppError } from "../../error/AppError";
+import {
+  CreateTransactionRpc,
+  CreateTransferRpc,
+} from "../../types/transactions";
+import { mapPgErrorToAppError } from "../../utils/error.utils";
+
+type RpcMap = {
+  create_transfer: CreateTransferRpc;
+  create_transaction: CreateTransactionRpc;
+};
 
 export const getAccountForUserOrThrow = async (
   accountId: string,
@@ -21,4 +31,22 @@ export const getAccountForUserOrThrow = async (
     throw AppError.forbidden("Accès interdit à ce compte");
 
   return data;
+};
+
+export const rpcSingleRow = async <K extends keyof RpcMap, T>(
+  supabaseUser: SupabaseClient,
+  fn: K,
+  args: RpcMap[K],
+  errMsgIfNoRow: string,
+): Promise<T> => {
+  const { data: rows, error } = await supabaseUser.rpc(fn as string, {
+    args,
+  });
+  if (error) throw mapPgErrorToAppError(error);
+
+  const result = rows?.[0];
+
+  if (!result) throw AppError.internalServer(errMsgIfNoRow);
+
+  return result;
 };
