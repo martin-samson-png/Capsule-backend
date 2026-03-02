@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { TransactionService } from "../services/transactions.service";
-import { TransactionController } from "./../controllers/transactions.controller";
-import { requireAuth } from "../middleware/requireAuth";
+import { TransactionService } from "./transactions.service";
+import { TransactionController } from "./transactions.controller";
+import { requireAuth } from "../../middleware/requireAuth";
 
 const router = Router();
 

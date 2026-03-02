@@ -1,5 +1,5 @@
 import { Router } from "express";
-import profileRouter from "./profiles.route";
+import profileRouter from "../features/profiles/profiles.route";
 
 export const router = Router();
 

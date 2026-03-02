@@ -1,5 +1,5 @@
-import { AppError } from "../error/AppError";
-import { ProfileService } from "../services/profiles.service";
+import { AppError } from "../../error/AppError";
+import { ProfileService } from "./profiles.service";
 import type { Request, Response, NextFunction } from "express";
 
 export class ProfileController {

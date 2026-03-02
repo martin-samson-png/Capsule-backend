@@ -1,5 +1,5 @@
-import { createSupabaseUserClient } from "../config/supabase";
-import { AppError } from "../error/AppError";
+import { createSupabaseUserClient } from "../../config/supabase";
+import { AppError } from "../../error/AppError";
 
 export class ProfileService {
   getProfileByUserId = async (userId: string, accessToken: string) => {
@@ -35,8 +35,8 @@ export class ProfileService {
 
     if (!data) throw AppError.notFound("Données introuvable");
 
-    const mainAccount = data.find((a) => (a.type = "main"));
-    const savingAccount = data.find((a) => (a.type = "savings"));
+    const mainAccount = data.find((a) => a.type === "main");
+    const savingAccount = data.find((a) => a.type === "savings");
     const totalAccount =
       (mainAccount?.balance_cents ?? 0) + (savingAccount?.balance_cents ?? 0);
 

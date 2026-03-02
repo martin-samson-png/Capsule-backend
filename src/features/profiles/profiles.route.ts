@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { requireAuth } from "../middleware/requireAuth";
-import { ProfileController } from "../controllers/profiles.controller";
-import { ProfileService } from "../services/profiles.service";
+import { requireAuth } from "../../middleware/requireAuth";
+import { ProfileController } from ".//profiles.controller";
+import { ProfileService } from "./profiles.service";
 
 const router = Router();
 const profileService = new ProfileService();
