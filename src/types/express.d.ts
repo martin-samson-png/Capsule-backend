@@ -5,6 +5,9 @@ declare global {
     interface Request {
       userId?: string;
       accessToken?: string;
+      validateBody?: unknown;
+      validateQuery?: unknown;
+      validateParams?: unknown;
     }
   }
 }

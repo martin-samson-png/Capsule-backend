@@ -23,6 +23,7 @@ export class ProfileService {
 
   async getAccountByUserId(userId: string, accessToken: string) {
     const supabaseUser = createSupabaseUserClient(accessToken);
+
     const { data, error } = await supabaseUser
       .from("accounts")
       .select("type, balance_cents")
@@ -33,7 +34,7 @@ export class ProfileService {
         "Erreur lors de la récupération des données",
       );
 
-    if (!data) throw AppError.notFound("Données introuvable");
+    if (!data?.length) throw AppError.notFound("Données introuvable");
 
     const mainAccount = data.find((a) => a.type === "main");
     const savingAccount = data.find((a) => a.type === "savings");

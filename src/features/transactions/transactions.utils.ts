@@ -1,10 +1,23 @@
 import { SupabaseClient } from "@supabase/supabase-js";
 import { AppError } from "../../error/AppError";
-import {
-  CreateTransactionRpc,
-  CreateTransferRpc,
-} from "../../types/transactions";
 import { mapPgErrorToAppError } from "../../utils/error.utils";
+
+type CreateTransferRpc = {
+  p_from_account_id: string;
+  p_to_account_id: string;
+  p_amount_cents: number;
+  p_date: string;
+  p_label: string | null;
+};
+
+type CreateTransactionRpc = {
+  p_account_id: string;
+  p_amount_cents: number;
+  p_date: string;
+  p_type: string;
+  p_category_id: string | null;
+  p_label: string | null;
+};
 
 type RpcMap = {
   create_transfer: CreateTransferRpc;
@@ -39,9 +52,7 @@ export const rpcSingleRow = async <K extends keyof RpcMap, T>(
   args: RpcMap[K],
   errMsgIfNoRow: string,
 ): Promise<T> => {
-  const { data: rows, error } = await supabaseUser.rpc(fn as string, {
-    args,
-  });
+  const { data: rows, error } = await supabaseUser.rpc(fn as string, args);
   if (error) throw mapPgErrorToAppError(error);
 
   const result = rows?.[0];
