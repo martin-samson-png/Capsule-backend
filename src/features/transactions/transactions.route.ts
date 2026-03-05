@@ -40,4 +40,13 @@ router.patch(
   },
 );
 
+router.delete(
+  "/:id",
+  requireAuth,
+  validate(idParamSchema, "params"),
+  (req, res, next) => {
+    transactionController.delete(req, res, next);
+  },
+);
+
 export default router;

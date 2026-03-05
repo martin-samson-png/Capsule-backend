@@ -188,4 +188,12 @@ export class TransactionService {
 
     return { ok: true };
   }
+
+  async delete(transactionId: string, accessToken: string) {
+    const supabaseUser = createSupabaseUserClient(accessToken);
+
+    await rpcVoid(supabaseUser, "delete_transaction", { p_id: transactionId });
+
+    return { ok: true };
+  }
 }

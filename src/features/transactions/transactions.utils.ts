@@ -29,10 +29,15 @@ type UpdateTransactionRpc = {
   p_set_label: boolean;
 };
 
+type DeleteTransactionRpc = {
+  p_id: string;
+};
+
 type RpcMap = {
   create_transfer: CreateTransferRpc;
   create_transaction: CreateTransactionRpc;
   update_transaction: UpdateTransactionRpc;
+  delete_transaction: DeleteTransactionRpc;
 };
 
 export const getAccountForUserOrThrow = async (

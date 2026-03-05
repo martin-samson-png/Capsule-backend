@@ -78,7 +78,23 @@ export class TransactionController {
         ...body,
       });
 
-      res.status(200).end();
+      res.status(204).end();
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  delete = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const accessToken = req.accessToken;
+      if (!accessToken)
+        return next(AppError.unauthorized("Utilisateur non authentifié"));
+
+      const { id: transactionId } = req.validateParams as { id: string };
+
+      await this.transactionService.delete(transactionId, accessToken);
+
+      res.status(204).end();
     } catch (err) {
       next(err);
     }
