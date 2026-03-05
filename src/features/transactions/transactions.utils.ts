@@ -19,9 +19,20 @@ type CreateTransactionRpc = {
   p_label: string | null;
 };
 
+type UpdateTransactionRpc = {
+  p_id: string;
+  p_amount_cents: number | null;
+  p_date: string | null;
+  p_category_id: string | null;
+  p_set_category: boolean;
+  p_label: string | null;
+  p_set_label: boolean;
+};
+
 type RpcMap = {
   create_transfer: CreateTransferRpc;
   create_transaction: CreateTransactionRpc;
+  update_transaction: UpdateTransactionRpc;
 };
 
 export const getAccountForUserOrThrow = async (
@@ -60,4 +71,13 @@ export const rpcSingleRow = async <K extends keyof RpcMap, T>(
   if (!result) throw AppError.internalServer(errMsgIfNoRow);
 
   return result;
+};
+
+export const rpcVoid = async <K extends keyof RpcMap, T>(
+  supabaseUser: SupabaseClient,
+  fn: K,
+  args: RpcMap[K],
+): Promise<void> => {
+  const { error } = await supabaseUser.rpc(fn as string, args);
+  if (error) throw mapPgErrorToAppError(error);
 };

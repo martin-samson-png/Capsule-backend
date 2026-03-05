@@ -6,6 +6,7 @@ import { validate } from "../../middleware/validate";
 import {
   transactionCreateSchema,
   transactionFindSchema,
+  transactionUpdateSchema,
 } from "../../validator/transactions/transactions.schema";
 import { idParamSchema } from "../../validator/common/idParams.schema";
 
@@ -27,6 +28,16 @@ router.get(
   validate(transactionFindSchema, "query"),
   validate(idParamSchema, "params"),
   (req, res, next) => transactionController.getByUserId(req, res, next),
+);
+
+router.patch(
+  "/:id",
+  requireAuth,
+  validate(transactionUpdateSchema),
+  validate(idParamSchema, "params"),
+  (req, res, next) => {
+    transactionController.update(req, res, next);
+  },
 );
 
 export default router;

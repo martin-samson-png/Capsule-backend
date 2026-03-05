@@ -1,7 +1,7 @@
 import { createSupabaseUserClient } from "../../config/supabase";
 import { AppError } from "../../error/AppError";
 import { convertToPgDate } from "../../utils/date";
-import { rpcSingleRow } from "./transactions.utils";
+import { rpcSingleRow, rpcVoid } from "./transactions.utils";
 
 export type TransactionType = "expense" | "income" | "transfer";
 export type TransactionSortBy = "category" | "createdAt" | "date";
@@ -14,9 +14,8 @@ export interface CreateTransaction {
   categoryId?: string;
   type: TransactionType;
   date: Date;
-  amountCents: number;
+  amount: number;
   label?: string;
-  userId: string;
   accessToken: string;
 }
 
@@ -34,10 +33,23 @@ export interface FindTransaction {
   sortOrder: TransactionSortOrder;
 }
 
+export interface UpdateTransaction {
+  accessToken: string;
+  transactionId: string;
+  amount?: number;
+  date?: Date;
+  categoryId?: string | null;
+  label?: string | null;
+}
+
 export class TransactionService {
   async create(input: CreateTransaction) {
     const supabaseUser = createSupabaseUserClient(input.accessToken);
     const pgDate = convertToPgDate(input.date);
+
+    if (input.amount <= 0) throw AppError.badRequest("Montant invalide");
+    const amountCents = Math.round(input.amount * 100);
+
     if (input.type === "transfer") {
       if (!input.fromAccountId || !input.toAccountId)
         throw AppError.badRequest("Compte manquant");
@@ -45,7 +57,6 @@ export class TransactionService {
         throw AppError.badRequest(
           "Vous ne pouvez pas transferer sur le meme compte",
         );
-      if (input.amountCents <= 0) throw AppError.badRequest("Montant invalide");
 
       const result = await rpcSingleRow(
         supabaseUser,
@@ -53,7 +64,7 @@ export class TransactionService {
         {
           p_from_account_id: input.fromAccountId,
           p_to_account_id: input.toAccountId,
-          p_amount_cents: input.amountCents,
+          p_amount_cents: amountCents,
           p_date: pgDate,
           p_label: input.label ?? null,
         },
@@ -63,14 +74,13 @@ export class TransactionService {
       return result;
     } else if (input.type === "expense" || input.type === "income") {
       if (!input.accountId) throw AppError.badRequest("Compte manquant");
-      if (input.amountCents <= 0) throw AppError.badRequest("Montant invalide");
 
       const result = await rpcSingleRow(
         supabaseUser,
         "create_transaction",
         {
           p_account_id: input.accountId,
-          p_amount_cents: input.amountCents,
+          p_amount_cents: amountCents,
           p_date: pgDate,
           p_type: input.type,
           p_category_id: input.categoryId ?? null,
@@ -110,7 +120,7 @@ export class TransactionService {
 
     let query = supabaseUser
       .from("transactions")
-      .select("*")
+      .select("id, date, amount_cents, label, created_at, type")
       .eq("user_id", input.userId)
       .or(
         `account_id.eq.${input.accountId},from_account_id.eq.${input.accountId},to_account_id.eq.${input.accountId}`,
@@ -135,5 +145,47 @@ export class TransactionService {
     const hasMore = data.length === input.limit;
 
     return { data: data ?? [], hasMore };
+  }
+
+  async update(input: UpdateTransaction) {
+    const supabaseUser = createSupabaseUserClient(input.accessToken);
+
+    let pgDate;
+    let amountCents;
+
+    const { accessToken, transactionId, ...body } = input;
+
+    const patch = Object.fromEntries(
+      Object.entries(body).filter(([_, v]) => v !== undefined),
+    );
+
+    if (Object.keys(patch).length === 0)
+      throw AppError.badRequest("Aucun champ à mettre à jour");
+
+    const setCategory = Object.hasOwn(input, "categoryId");
+    const categoryId = input.categoryId ?? null;
+
+    const setLabel = Object.hasOwn(input, "label");
+    const label = input.label ?? null;
+
+    if (input.date) pgDate = convertToPgDate(input.date);
+
+    if (input.amount !== undefined && input.amount <= 0)
+      throw AppError.badRequest("Le montant doit être >= 0");
+
+    if (input.amount !== undefined)
+      amountCents = Math.round(input.amount * 100);
+
+    await rpcVoid(supabaseUser, "update_transaction", {
+      p_id: input.transactionId,
+      p_amount_cents: amountCents ?? null,
+      p_date: pgDate ?? null,
+      p_category_id: categoryId,
+      p_set_category: setCategory,
+      p_label: label,
+      p_set_label: setLabel,
+    });
+
+    return { ok: true };
   }
 }

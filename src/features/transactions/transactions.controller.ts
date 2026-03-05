@@ -3,6 +3,7 @@ import {
   CreateTransaction,
   FindTransaction,
   TransactionService,
+  UpdateTransaction,
 } from "./transactions.service";
 import type { Request, Response, NextFunction } from "express";
 
@@ -11,10 +12,9 @@ export class TransactionController {
 
   create = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const userId = req.userId;
       const accessToken = req.accessToken;
 
-      if (!userId || !accessToken)
+      if (!accessToken)
         return next(AppError.unauthorized("Utilisateur non authentifié"));
 
       const body = req.validateBody as Omit<
@@ -24,7 +24,6 @@ export class TransactionController {
 
       const result = await this.transactionService.create({
         ...body,
-        userId,
         accessToken,
       });
       res.status(201).json(result);
@@ -56,6 +55,30 @@ export class TransactionController {
       });
 
       res.status(200).json(transactions);
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  update = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const accessToken = req.accessToken;
+      if (!accessToken)
+        return next(AppError.unauthorized("Utilisateur non authentifié"));
+
+      const { id: transactionId } = req.validateParams as { id: string };
+      const body = req.validateBody as Omit<
+        UpdateTransaction,
+        "accessToken" | "transactionId"
+      >;
+
+      await this.transactionService.update({
+        accessToken,
+        transactionId,
+        ...body,
+      });
+
+      res.status(200).end();
     } catch (err) {
       next(err);
     }
