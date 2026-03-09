@@ -3,11 +3,9 @@ import { TransactionService } from "./transactions.service";
 import { TransactionController } from "./transactions.controller";
 import { requireAuth } from "../../middleware/requireAuth";
 import { validate } from "../../middleware/validate";
-import {
-  transactionCreateSchema,
-  transactionFindSchema,
-  transactionUpdateSchema,
-} from "../../validator/transactions/transactions.schema";
+import { transactionCreateSchema } from "../../validator/transactions/create.schema";
+import { transactionFindSchema } from "../../validator/transactions/find.schema";
+import { transactionUpdateSchema } from "../../validator/transactions/update.schema";
 import { idParamSchema } from "../../validator/common/idParams.schema";
 
 const router = Router();

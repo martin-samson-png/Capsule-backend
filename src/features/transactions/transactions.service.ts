@@ -4,8 +4,6 @@ import { convertToPgDate } from "../../utils/date";
 import { rpcSingleRow, rpcVoid } from "./transactions.utils";
 
 export type TransactionType = "expense" | "income" | "transfer";
-export type TransactionSortBy = "category" | "createdAt" | "date";
-export type TransactionSortOrder = "asc" | "desc";
 
 export interface CreateTransaction {
   accountId?: string;
@@ -29,8 +27,8 @@ export interface FindTransaction {
   from?: Date;
   to?: Date;
   type?: TransactionType;
-  sortBy: TransactionSortBy;
-  sortOrder: TransactionSortOrder;
+  sortBy: "category" | "createdAt" | "date";
+  sortOrder: "asc" | "desc";
 }
 
 export interface UpdateTransaction {
@@ -46,8 +44,6 @@ export class TransactionService {
   async create(input: CreateTransaction) {
     const supabaseUser = createSupabaseUserClient(input.accessToken);
     const pgDate = convertToPgDate(input.date);
-
-    if (input.amount <= 0) throw AppError.badRequest("Montant invalide");
     const amountCents = Math.round(input.amount * 100);
 
     if (input.type === "transfer") {
@@ -101,6 +97,12 @@ export class TransactionService {
     const asc = input.sortOrder === "asc";
     const from = (input.page - 1) * input.limit;
     const to = from + input.limit - 1;
+    const sortMap = {
+      date: "date",
+      createdAt: "created_at",
+      category: "category_id",
+    };
+    const sortColumn = sortMap[input.sortBy];
 
     if (input.from) fromPgDate = convertToPgDate(input.from);
     if (input.to) toPgDate = convertToPgDate(input.to);
@@ -124,16 +126,21 @@ export class TransactionService {
       .eq("user_id", input.userId)
       .or(
         `account_id.eq.${input.accountId},from_account_id.eq.${input.accountId},to_account_id.eq.${input.accountId}`,
-      )
-      .order("date", { ascending: asc })
-      .order("created_at", { ascending: asc })
-      .order("id", { ascending: asc })
-      .range(from, to);
+      );
 
     if (input.categoryId) query.eq("category_id", input.categoryId);
     if (input.type) query.eq("type", input.type);
     if (input.from) query.gte("date", fromPgDate);
     if (input.to) query.lte("date", toPgDate);
+
+    query = query.order(sortColumn, { ascending: asc });
+
+    if (sortColumn !== "created_at")
+      query = query.order("created_at", { ascending: asc });
+
+    query = query.order("id", { ascending: asc });
+
+    query = query.range(from, to);
 
     const { data, error } = await query;
 
@@ -169,9 +176,6 @@ export class TransactionService {
     const label = input.label ?? null;
 
     if (input.date) pgDate = convertToPgDate(input.date);
-
-    if (input.amount !== undefined && input.amount <= 0)
-      throw AppError.badRequest("Le montant doit être >= 0");
 
     if (input.amount !== undefined)
       amountCents = Math.round(input.amount * 100);

@@ -24,6 +24,9 @@ export const validate =
         break;
     }
 
+    if (target === "body" && (data === undefined || data === null))
+      return next(AppError.badRequest("Le body est requis"));
+
     const { value, error } = schema.validate(data, {
       abortEarly: false,
       stripUnknown: true,
