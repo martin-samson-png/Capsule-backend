@@ -19,6 +19,15 @@ type CreateTransactionRpc = {
   p_label: string | null;
 };
 
+type CreateContributionRpc = {
+  p_account_id: string;
+  p_goal_id: string;
+  p_category_id: string | null;
+  p_amount_cents: number;
+  p_date: string;
+  p_label: string | null;
+};
+
 type UpdateTransactionRpc = {
   p_id: string;
   p_amount_cents: number | null;
@@ -36,6 +45,7 @@ type DeleteTransactionRpc = {
 type RpcMap = {
   create_transfer: CreateTransferRpc;
   create_transaction: CreateTransactionRpc;
+  create_contribution: CreateContributionRpc;
   update_transaction: UpdateTransactionRpc;
   delete_transaction: DeleteTransactionRpc;
 };
@@ -69,6 +79,7 @@ export const rpcSingleRow = async <K extends keyof RpcMap, T>(
   errMsgIfNoRow: string,
 ): Promise<T> => {
   const { data: rows, error } = await supabaseUser.rpc(fn as string, args);
+
   if (error) throw mapPgErrorToAppError(error);
 
   const result = rows?.[0];

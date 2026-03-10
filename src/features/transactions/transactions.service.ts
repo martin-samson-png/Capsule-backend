@@ -3,13 +3,18 @@ import { AppError } from "../../error/AppError";
 import { convertToPgDate } from "../../utils/date";
 import { rpcSingleRow, rpcVoid } from "./transactions.utils";
 
-export type TransactionType = "expense" | "income" | "transfer";
+export type TransactionType =
+  | "expense"
+  | "income"
+  | "transfer"
+  | "contribution";
 
 export interface CreateTransaction {
   accountId?: string;
   fromAccountId?: string;
   toAccountId?: string;
   categoryId?: string;
+  goalId?: string;
   type: TransactionType;
   date: Date;
   amount: number;
@@ -80,6 +85,25 @@ export class TransactionService {
           p_date: pgDate,
           p_type: input.type,
           p_category_id: input.categoryId ?? null,
+          p_label: input.label ?? null,
+        },
+        "Transaction OK mais résultat absent",
+      );
+
+      return result;
+    } else if (input.type === "contribution") {
+      if (!input.accountId) throw AppError.badRequest("Compte manquant");
+      if (!input.goalId) throw AppError.badRequest("Objectif manquant");
+
+      const result = await rpcSingleRow(
+        supabaseUser,
+        "create_contribution",
+        {
+          p_account_id: input.accountId,
+          p_goal_id: input.goalId,
+          p_category_id: input.categoryId ?? null,
+          p_amount_cents: amountCents,
+          p_date: pgDate,
           p_label: input.label ?? null,
         },
         "Transaction OK mais résultat absent",

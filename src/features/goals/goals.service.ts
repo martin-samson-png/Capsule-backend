@@ -104,4 +104,10 @@ export class GoalsService {
 
     return { data: data ?? [], hasMore };
   }
+
+  async update(input: any) {
+    const supabaseUser = createSupabaseUserClient(input.accessToken);
+
+    // ajouter type contribution pour les transferts avec alter (bdd)
+  }
 }

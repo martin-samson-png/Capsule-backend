@@ -21,13 +21,19 @@ export const transactionCreateSchema = Joi.object({
     "string.guid": "categoryId doit être un UUID valide.",
   }),
 
+  goalId: Joi.string().uuid().optional().messages({
+    "string.base": "goalId doit être une chaine de caractère.",
+    "string.guid": "goalId doit être un UUID valide.",
+  }),
+
   type: Joi.string()
-    .valid("expense", "income", "transfer")
+    .valid("expense", "income", "transfer", "contribution")
     .required()
     .messages({
       "any.required": "Le type de transaction est obligatoire.",
       "string.empty": "Le type de transaction est obligatoire.",
-      "any.only": "Le type doit être 'expense', 'income' ou 'transfer'.",
+      "any.only":
+        "Le type doit être 'expense', 'income', 'transfer' ou 'contribution'.",
       "string.base": "Le type de transaction est invalide.",
     }),
 
