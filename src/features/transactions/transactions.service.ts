@@ -1,7 +1,8 @@
 import { createSupabaseUserClient } from "../../config/supabase";
 import { AppError } from "../../error/AppError";
 import { convertToPgDate } from "../../utils/date";
-import { rpcSingleRow, rpcVoid } from "./transactions.utils";
+import { euroToCents } from "../../utils/money";
+import { rpcSingleRow, rpcVoid } from "../../utils/rpc";
 
 export type TransactionType =
   | "expense"
@@ -194,25 +195,24 @@ export class TransactionService {
       throw AppError.badRequest("Aucun champ à mettre à jour");
 
     const setCategory = Object.hasOwn(input, "categoryId");
-    const categoryId = input.categoryId ?? null;
-
     const setLabel = Object.hasOwn(input, "label");
-    const label = input.label ?? null;
 
-    if (input.date) pgDate = convertToPgDate(input.date);
+    if (input.date !== undefined) pgDate = convertToPgDate(input.date);
 
-    if (input.amount !== undefined)
-      amountCents = Math.round(input.amount * 100);
+    if (input.amount !== undefined) amountCents = euroToCents(input.amount);
+    console.log(input.transactionId);
 
     await rpcVoid(supabaseUser, "update_transaction", {
       p_id: input.transactionId,
       p_amount_cents: amountCents ?? null,
       p_date: pgDate ?? null,
-      p_category_id: categoryId,
+      p_category_id: input.categoryId ?? null,
       p_set_category: setCategory,
-      p_label: label,
+      p_label: input.label ?? null,
       p_set_label: setLabel,
     });
+
+    // factoriser la grosse fonction sql en 3 autres fonction pour les different cas
 
     return { ok: true };
   }

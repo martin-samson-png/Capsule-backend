@@ -1,6 +1,8 @@
 import { createSupabaseUserClient } from "../../config/supabase";
 import { AppError } from "../../error/AppError";
 import { convertToPgDate } from "../../utils/date";
+import { euroToCents } from "../../utils/money";
+import { rpcVoid } from "../../utils/rpc";
 
 export type GoalStatus = "active" | "completed" | "archived";
 
@@ -25,11 +27,19 @@ export interface FindGoal {
   sortOrder: "asc" | "desc";
 }
 
+export interface UpdateGoal {
+  accessToken: string;
+  goalId: string;
+  label?: string;
+  targetAmount?: number;
+  deadline?: string;
+}
+
 export class GoalsService {
   async create(input: CreateGoal) {
     const supabaseUser = createSupabaseUserClient(input.accessToken);
     const pgDeadline = convertToPgDate(input.deadline);
-    const targetAmountCents = Math.round(input.targetAmount * 100);
+    const targetAmountCents = euroToCents(input.targetAmount);
 
     const { data, error } = await supabaseUser
       .from("goals")
@@ -105,9 +115,29 @@ export class GoalsService {
     return { data: data ?? [], hasMore };
   }
 
-  async update(input: any) {
+  async update(input: UpdateGoal) {
     const supabaseUser = createSupabaseUserClient(input.accessToken);
 
-    // ajouter type contribution pour les transferts avec alter (bdd)
+    let pgDeadline;
+    let targetAmountCents;
+
+    const { accessToken, goalId, ...body } = input;
+
+    const patch = Object.fromEntries(
+      Object.entries(body).filter(([_, v]) => v !== undefined),
+    );
+
+    if (Object.keys(patch).length === 0)
+      throw AppError.badRequest("Aucun champ à mettre à jour");
+
+    const setDeadline = Object.hasOwn(input, "label");
+
+    if (input.deadline !== undefined)
+      pgDeadline = convertToPgDate(input.deadline);
+
+    if (input.targetAmount !== undefined)
+      targetAmountCents = euroToCents(input.targetAmount);
+
+    await rpcVoid(supabaseUser, "update_goal", {});
   }
 }
