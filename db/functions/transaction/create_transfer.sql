@@ -45,12 +45,12 @@ begin
   if p_from_account_id is null or p_to_account_id is null then
     raise exception using
       errcode = 'P0002',
-      message = 'from_account_id et to_account_id sont requient';
+      message = 'from_account_id et to_account_id sont requis';
   end if;
   if p_from_account_id = p_to_account_id then
     raise exception using
       errcode = 'P0002',
-      message = 'from_account_id et to_account_id doivent être différent';
+      message = 'from_account_id et to_account_id doivent être différents';
   end if;
 
   if p_date is null then raise exception using
@@ -81,7 +81,7 @@ begin
   if v_from_balance < p_amount_cents then 
     raise exception using
     errcode = 'P0005',
-    message = 'Fond insuffisant';
+    message = 'Fonds insuffisants';
   end if;
 
   update accounts a

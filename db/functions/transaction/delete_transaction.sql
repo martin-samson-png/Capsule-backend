@@ -195,17 +195,12 @@ begin
     );
   else
     raise exception using
-      errcode = 'P0005',
+      errcode = 'P0006',
       message = 'Type inconnu';
   end if;
 
   delete from transactions
   where id = p_id and user_id = v_uid;
-  if not found then
-    raise exception using
-      errcode = 'P0003',
-      message = 'Transaction introuvable';
-  end if;
 end;
 $$;
 

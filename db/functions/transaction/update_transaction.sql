@@ -1,7 +1,7 @@
 create or replace function public.update_transfer_transaction(
   p_from_account_id uuid,
   p_to_account_id uuid,
-  p_delta bigint,
+  p_delta bigint
 )
 returns void
 language plpgsql
@@ -56,6 +56,12 @@ begin
     message = 'Non authentifié';
   end if;
   
+  if p_type not in ('expense', 'income') then
+  raise exception using
+    errcode = 'P0002',
+    message = 'Type invalide';
+  end if;
+
   if p_delta <> 0 then
     perform 1 from accounts where id = p_account_id and user_id = v_uid for update;
     if not found then raise exception using
@@ -85,6 +91,7 @@ as $$
 declare
   v_uid uuid;
   v_goal_id uuid;
+  v_current_amount_cents bigint;
 begin
   v_uid := auth.uid();
   if v_uid is null then raise exception using
@@ -105,10 +112,16 @@ begin
       message = 'Contribution liée à aucun objectif';
     end if;
 
-    perform 1 from goals where id = v_goal_id and user_id = v_uid for update; 
+    select current_amount_cents into v_current_amount_cents from goals where id = v_goal_id and user_id = v_uid for update; 
     if not found then raise exception using
       errcode = 'P0002',
       message = 'Goal_id invalide';
+    end if;
+
+    if v_current_amount_cents + v_delta < 0 then 
+    raise exception using
+      errcode = 'P0002',
+      message = 'Le solde de l''objectif ne peut pas être négatif';
     end if;
 
     update accounts 
@@ -175,6 +188,14 @@ begin
     message = 'La date ne peut pas être dans le futur';
   end if;
 
+  if p_set_category and p_category_id then
+    perform 1 from categories where id = p_category_id and user_id = v_uid;
+    if not found then raise exception using
+      errcode = 'P0002',
+      message = 'Category_id invalide';
+    end if;
+  end if;
+
   select account_id, from_account_id, to_account_id, type, amount_cents, category_id, label 
   into v_tx from transactions
   where id = p_id and user_id = v_uid
@@ -186,15 +207,6 @@ begin
 
   v_new_amount := coalesce(p_amount_cents, v_tx.amount_cents);
   v_delta := v_new_amount - v_tx.amount_cents;
-
-  update transactions t
-  set
-    amount_cents = v_new_amount,
-    date = coalesce(p_date, t.date),
-    category_id = case when p_set_category then p_category_id else t.category_id end,
-    label = case when p_set_label then p_label else t.label end,
-    updated_at = now()
-  where t.id = p_id and t.user_id = v_uid;
 
   if v_tx.type = 'transfer' then
     perform public.update_transfer_transaction(
@@ -215,6 +227,15 @@ begin
       errcode = 'P0005', 
       message = 'Type inconnu';
   end if;
+
+  update transactions t
+  set
+    amount_cents = v_new_amount,
+    date = coalesce(p_date, t.date),
+    category_id = case when p_set_category then p_category_id else t.category_id end,
+    label = case when p_set_label then p_label else t.label end,
+    updated_at = now()
+  where t.id = p_id and t.user_id = v_uid;
 end;
 $$;
 

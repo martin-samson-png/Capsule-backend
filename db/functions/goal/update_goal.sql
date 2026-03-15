@@ -11,7 +11,7 @@ security invoker
 as $$
 declare
   v_uid uuid;
-  begin
+begin
   v_uid:= auth.uid();
   if v_uid is null then raise exception using
     errcode = 'P0001',
@@ -27,6 +27,18 @@ declare
   and p_set_deadline is false then raise exception using
     errcode = 'P0002',
     message = 'Aucun champ à mettre à jour'
+  end if;
+
+  if p_set_deadline and p_deadline is not null and p_deadline < current_date then
+  raise exception using
+    errcode = 'P0002',
+    message = 'La deadline ne peut pas être dans le passé';
+  end if;
+
+  if p_target_amount_cents is not null and p_target_amount_cents <= 0 then
+  raise exception using
+    errcode  = 'P0002',
+    message = 'Le montant cible doit être > 0';
   end if;
 
   perform 1 from goals where id = p_id and user_id = v_uid for update;

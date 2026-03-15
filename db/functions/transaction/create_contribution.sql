@@ -29,7 +29,7 @@ declare
   v_goal record;
   v_category_name text;
   v_balance_cents bigint;
-  v_new_amount bigint
+  v_new_amount bigint;
 
 begin
   v_uid := auth.uid();
@@ -96,7 +96,7 @@ begin
   update goals g
   set 
     current_amount_cents = v_new_amount,
-    status = case v_new_amount >= g.target_amount_cents then 'completed' else g.status end,
+    status = case when v_new_amount >= g.target_amount_cents then 'completed' else g.status end
   where id = p_goal_id and user_id = v_uid
   returning  goals.current_amount_cents into v_current_amount_cents;
   if not found then raise exception using

@@ -43,7 +43,7 @@ begin
   if p_account_id is null then
     raise exception using
       errcode = 'P0002',
-      message = 'from_account_id et to_account_id sont requient';
+      message = 'p_account_id requis';
   end if;
 
   if p_date is null then raise exception using
@@ -57,7 +57,7 @@ begin
 
   if p_category_id is not null then
     select name into v_category_name from categories
-    where id = p_category_id;
+    where id = p_category_id and user_id = v_uid;
 
     if not found then raise exception using
       errcode = 'P0002',
