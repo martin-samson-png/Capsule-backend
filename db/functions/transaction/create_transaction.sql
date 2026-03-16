@@ -56,7 +56,7 @@ begin
   end if;
 
   if p_category_id is not null then
-    select name into v_category_name from categories
+    select label into v_category_name from categories
     where id = p_category_id and user_id = v_uid;
 
     if not found then raise exception using

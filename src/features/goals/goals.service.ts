@@ -131,7 +131,7 @@ export class GoalsService {
     if (Object.keys(patch).length === 0)
       throw AppError.badRequest("Aucun champ à mettre à jour");
 
-    const setDeadline = Object.hasOwn(input, "label");
+    const setDeadline = Object.hasOwn(input, "deadline");
 
     if (input.deadline !== undefined)
       pgDeadline = convertToPgDate(input.deadline);
