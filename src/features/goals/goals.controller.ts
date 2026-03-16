@@ -1,5 +1,10 @@
 import { Request, Response, NextFunction } from "express";
-import { CreateGoal, FindGoal, GoalsService } from "./goals.service";
+import {
+  CreateGoal,
+  FindGoal,
+  GoalsService,
+  UpdateGoal,
+} from "./goals.service";
 import { AppError } from "../../error/AppError";
 
 export class GoalsController {
@@ -49,6 +54,27 @@ export class GoalsController {
       });
 
       res.status(200).json(goals);
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  update = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const accessToken = req.accessToken;
+
+      if (!accessToken)
+        return next(AppError.unauthorized("Utilisateur non authentifié"));
+
+      const { id: goalId } = req.validateParams as { id: string };
+      const body = req.validateBody as Omit<
+        UpdateGoal,
+        "accessToken" | "goalId"
+      >;
+
+      await this.goalsService.update({ goalId, accessToken, ...body });
+
+      res.status(204).end();
     } catch (err) {
       next(err);
     }

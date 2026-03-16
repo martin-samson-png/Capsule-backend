@@ -138,6 +138,16 @@ export class GoalsService {
     if (input.targetAmount !== undefined)
       targetAmountCents = euroToCents(input.targetAmount);
 
-    await rpcVoid(supabaseUser, "update_goal", {});
+    await rpcVoid(supabaseUser, "update_goal", {
+      p_id: input.goalId,
+      p_label: input.label ?? null,
+      p_target_amount_cents: targetAmountCents ?? null,
+      p_deadline: pgDeadline ?? null,
+      p_set_deadline: setDeadline,
+    });
+
+    return { ok: true };
   }
+
+  async delete(id: string) {}
 }

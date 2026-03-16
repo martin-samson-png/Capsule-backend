@@ -212,8 +212,6 @@ export class TransactionService {
       p_set_label: setLabel,
     });
 
-    // factoriser la grosse fonction sql en 3 autres fonction pour les different cas
-
     return { ok: true };
   }
 
