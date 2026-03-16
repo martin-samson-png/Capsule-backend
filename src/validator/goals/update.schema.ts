@@ -13,7 +13,11 @@ export const goalUpdateSchema = Joi.object({
   deadline: Joi.date().iso().greater("now").optional().messages({
     "date.base": "La deadline est invalide.",
     "date.format": "La deadline doit être au format ISO.",
-    "date.less": "La deadline doit être dans le futur",
+    "date.greater": "La deadline doit être dans le futur",
+  }),
+  status: Joi.string().valid("active", "completed", "cancelled").messages({
+    "string.base": "Le status doit être une chaîne",
+    "any.only": "Status invalide",
   }),
 })
   .min(1)

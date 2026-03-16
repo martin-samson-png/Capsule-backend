@@ -98,7 +98,7 @@ begin
     current_amount_cents = v_new_amount,
     status = case when v_new_amount >= g.target_amount_cents then 'completed' else g.status end
   where id = p_goal_id and user_id = v_uid
-  returning  goals.current_amount_cents into v_current_amount_cents;
+  returning  g.current_amount_cents into v_current_amount_cents;
   if not found then raise exception using
     errcode = 'P0006',
     message = 'Echec de la mise a jour du goal';

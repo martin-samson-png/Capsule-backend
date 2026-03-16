@@ -32,6 +32,7 @@ export interface UpdateGoal {
   goalId: string;
   label?: string;
   targetAmount?: number;
+  status?: string;
   deadline?: string;
 }
 
@@ -143,11 +144,18 @@ export class GoalsService {
       p_label: input.label ?? null,
       p_target_amount_cents: targetAmountCents ?? null,
       p_deadline: pgDeadline ?? null,
+      p_status: input.status ?? null,
       p_set_deadline: setDeadline,
     });
 
     return { ok: true };
   }
 
-  async delete(id: string) {}
+  async delete(goalId: string, accessToken: string) {
+    const supabaseUser = createSupabaseUserClient(accessToken);
+
+    await rpcVoid(supabaseUser, "delete_goal", { p_id: goalId });
+
+    return { ok: true };
+  }
 }

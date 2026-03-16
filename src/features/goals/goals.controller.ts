@@ -62,7 +62,6 @@ export class GoalsController {
   update = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const accessToken = req.accessToken;
-
       if (!accessToken)
         return next(AppError.unauthorized("Utilisateur non authentifié"));
 
@@ -73,6 +72,22 @@ export class GoalsController {
       >;
 
       await this.goalsService.update({ goalId, accessToken, ...body });
+
+      res.status(204).end();
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  delete = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const accessToken = req.accessToken;
+      if (!accessToken)
+        return next(AppError.unauthorized("Utilisateur non authentifié"));
+
+      const { id: goalId } = req.validateParams as { id: string };
+
+      await this.goalsService.delete(goalId, accessToken);
 
       res.status(204).end();
     } catch (err) {

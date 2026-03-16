@@ -25,7 +25,7 @@ export const transactionFindSchema = Joi.object({
     "date.format": "La date doit être au format ISO.",
   }),
   type: Joi.string()
-    .valid("income", "expense", "transfer")
+    .valid("income", "expense", "transfer", "contribution")
     .optional()
     .messages({
       "string.base": "type doit être une chaîne",

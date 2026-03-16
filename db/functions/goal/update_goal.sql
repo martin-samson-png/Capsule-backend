@@ -3,6 +3,7 @@ create or replace function public.update_goal(
   p_label text,
   p_target_amount_cents bigint,
   p_deadline date,
+  p_status text,
   p_set_deadline boolean default false
 )
 returns void
@@ -26,10 +27,17 @@ begin
     message = 'p_id obligatoire';
   end if;
 
-  if p_label is null and p_target_amount_cents is null
+
+  if p_label is null and p_target_amount_cents is null and p_status is null
   and p_set_deadline is false then raise exception using
     errcode = 'P0002',
     message = 'Aucun champ à mettre à jour';
+  end if;
+
+  if p_status is not null and p_status not in ('active', 'completed', 'cancelled') then
+  raise exception using
+    errcode = 'P0002',
+    message = 'Status invalide';
   end if;
 
   if p_set_deadline and p_deadline is not null and p_deadline < current_date then
@@ -52,9 +60,10 @@ begin
 
   v_new_target_amount_cents := coalesce(p_target_amount_cents, v_goal.target_amount_cents);
   
-  v_new_status := case 
-    when v_goal.current_amount_cents < v_new_target_amount_cents then 'active'
-    else 'completed'
+  v_new_status := case
+    when p_status = 'cancelled' then 'cancelled'
+    when v_goal.current_amount_cents >= v_new_target_amount_cents then 'completed'
+    else 'active'
   end;
 
   update goals g

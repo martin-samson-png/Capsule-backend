@@ -37,4 +37,11 @@ router.patch(
   (req, res, next) => goalsController.update(req, res, next),
 );
 
+router.delete(
+  "/:id",
+  requireAuth,
+  validate(idParamSchema, "params"),
+  (req, res, next) => goalsController.delete(req, res, next),
+);
+
 export default router;
