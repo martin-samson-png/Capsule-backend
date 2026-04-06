@@ -12,6 +12,10 @@ export const transactionFindSchema = Joi.object({
     "number.min": "limit doit être >= 1",
     "number.max": "limit ne doit pas dépasser 50",
   }),
+  accountId: Joi.string().uuid().optional().messages({
+    "string.base": "categoryId doit être une chaîne",
+    "string.guid": "categoryId doit être un UUID valide.",
+  }),
   categoryId: Joi.string().uuid().optional().messages({
     "string.base": "categoryId doit être une chaîne",
     "string.guid": "categoryId doit être un UUID valide.",

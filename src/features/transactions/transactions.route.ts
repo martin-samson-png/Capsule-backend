@@ -21,10 +21,9 @@ router.post(
 );
 
 router.get(
-  "/:id",
+  "/",
   requireAuth,
   validate(transactionFindSchema, "query"),
-  validate(idParamSchema, "params"),
   (req, res, next) => transactionController.getByUserId(req, res, next),
 );
 

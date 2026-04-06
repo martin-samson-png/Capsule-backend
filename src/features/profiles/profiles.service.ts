@@ -43,18 +43,4 @@ export class ProfileService {
 
     return { mainAccount, savingAccount, totalAccount };
   }
-
-  async getMe(userId: string, accessToken: string) {
-    const profile = await this.getProfileByUserId(userId, accessToken);
-    const accounts = await this.getAccountByUserId(userId, accessToken);
-
-    return {
-      profile,
-      accounts: {
-        main: accounts.mainAccount?.balance_cents,
-        savings: accounts.savingAccount?.balance_cents,
-        total: accounts.totalAccount,
-      },
-    };
-  }
 }

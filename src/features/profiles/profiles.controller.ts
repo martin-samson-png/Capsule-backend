@@ -14,7 +14,10 @@ export class ProfileController {
         return next(AppError.unauthorized("Utilisateur non authentifié"));
       }
 
-      const me = await this.profileService.getMe(userId, accessToken);
+      const me = await this.profileService.getProfileByUserId(
+        userId,
+        accessToken,
+      );
       res.status(200).json(me);
     } catch (err) {
       next(err);

@@ -45,11 +45,8 @@ export class TransactionController {
         "userId" | "accessToken" | "accountId"
       >;
 
-      const { id: accountId } = req.validateParams as { id: string };
-
       const transactions = await this.transactionService.getByUserId({
         ...query,
-        accountId,
         userId,
         accessToken,
       });

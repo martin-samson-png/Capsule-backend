@@ -28,7 +28,7 @@ export interface FindTransaction {
   accessToken: string;
   page: number;
   limit: number;
-  accountId: string;
+  accountId?: string;
   categoryId?: string;
   from?: Date;
   to?: Date;
@@ -148,15 +148,16 @@ export class TransactionService {
     let query = supabaseUser
       .from("transactions")
       .select("id, date, amount_cents, label, created_at, type")
-      .eq("user_id", input.userId)
-      .or(
-        `account_id.eq.${input.accountId},from_account_id.eq.${input.accountId},to_account_id.eq.${input.accountId}`,
-      );
+      .eq("user_id", input.userId);
 
     if (input.categoryId) query.eq("category_id", input.categoryId);
     if (input.type) query.eq("type", input.type);
     if (input.from) query.gte("date", fromPgDate);
     if (input.to) query.lte("date", toPgDate);
+    if (input.accountId)
+      query.or(
+        `account_id.eq.${input.accountId},from_account_id.eq.${input.accountId},to_account_id.eq.${input.accountId}`,
+      );
 
     query = query.order(sortColumn, { ascending: asc });
 
