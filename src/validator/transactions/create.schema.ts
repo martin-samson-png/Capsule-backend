@@ -37,7 +37,7 @@ export const transactionCreateSchema = Joi.object({
       "string.base": "Le type de transaction est invalide.",
     }),
 
-  date: Joi.date().iso().less("now").required().messages({
+  date: Joi.date().iso().max("now").required().messages({
     "any.required": "La date est obligatoire.",
     "date.base": "La date est invalide.",
     "date.format": "La date doit être au format ISO.",
