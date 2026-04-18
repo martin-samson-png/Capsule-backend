@@ -1,4 +1,5 @@
 import { AppError } from "../../error/AppError";
+import { toCamelCase } from "../../utils/formatters";
 import {
   CreateTransaction,
   FindTransaction,
@@ -26,7 +27,10 @@ export class TransactionController {
         ...body,
         accessToken,
       });
-      res.status(201).json(result);
+
+      const response = toCamelCase(result);
+
+      res.status(201).json(response);
     } catch (err) {
       next(err);
     }
@@ -51,7 +55,9 @@ export class TransactionController {
         accessToken,
       });
 
-      res.status(200).json(transactions);
+      const response = toCamelCase(transactions);
+
+      res.status(200).json(response);
     } catch (err) {
       next(err);
     }
@@ -60,6 +66,7 @@ export class TransactionController {
   getById = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { id: transactionId } = req.validateParams as { id: string };
+
       const userId = req.userId;
       const accessToken = req.accessToken;
 
@@ -72,7 +79,9 @@ export class TransactionController {
         accessToken,
       });
 
-      res.status(200).json(transaction);
+      const response = toCamelCase(transaction);
+
+      res.status(200).json(response);
     } catch (err) {
       next(err);
     }

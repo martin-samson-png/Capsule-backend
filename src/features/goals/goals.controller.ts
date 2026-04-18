@@ -6,6 +6,7 @@ import {
   UpdateGoal,
 } from "./goals.service";
 import { AppError } from "../../error/AppError";
+import { toCamelCase } from "../../utils/formatters";
 
 export class GoalsController {
   constructor(private readonly goalsService: GoalsService) {}
@@ -28,7 +29,10 @@ export class GoalsController {
         accessToken,
         userId,
       });
-      res.status(201).json(result);
+
+      const response = toCamelCase(result);
+
+      res.status(201).json(response);
     } catch (err) {
       next(err);
     }
@@ -53,7 +57,9 @@ export class GoalsController {
         accessToken,
       });
 
-      res.status(200).json(goals);
+      const response = toCamelCase(goals);
+
+      res.status(200).json(response);
     } catch (err) {
       next(err);
     }

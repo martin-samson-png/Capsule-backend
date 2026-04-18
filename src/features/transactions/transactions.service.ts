@@ -192,7 +192,7 @@ export class TransactionService {
     const { data, error } = await supabaseUser
       .from("transactions")
       .select(
-        "id, date, amount_cents, label, type, account_id, from_account_id, to_account_id, category_id, goal_id",
+        "id, date, amount_cents, label, type, account_id, from_account_id, to_account_id, category_id, goal_contributions(goal_id)",
       )
       .eq("user_id", input.userId)
       .eq("id", input.transactionId)
@@ -205,7 +205,16 @@ export class TransactionService {
 
     if (!data) throw AppError.notFound("Transaction introuvable");
 
-    return data;
+    const { goal_contributions, ...rest } = data;
+
+    const contribution = Array.isArray(data.goal_contributions)
+      ? data.goal_contributions[0]
+      : data.goal_contributions;
+
+    return {
+      ...rest,
+      goalId: contribution?.goal_id || null,
+    };
   }
 
   async update(input: UpdateTransaction) {
@@ -229,7 +238,6 @@ export class TransactionService {
     if (input.date !== undefined) pgDate = convertToPgDate(input.date);
 
     if (input.amount !== undefined) amountCents = euroToCents(input.amount);
-    console.log(input.transactionId);
 
     await rpcVoid(supabaseUser, "update_transaction", {
       p_id: input.transactionId,

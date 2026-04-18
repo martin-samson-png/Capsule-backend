@@ -5,6 +5,7 @@ import {
   UpdateCategory,
 } from "./categories.service";
 import { AppError } from "../../error/AppError";
+import { toCamelCase } from "../../utils/formatters";
 
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
@@ -28,7 +29,9 @@ export class CategoriesController {
         ...body,
       });
 
-      res.status(201).json(result);
+      const response = toCamelCase(result);
+
+      res.status(201).json(response);
     } catch (err) {
       next(err);
     }
@@ -47,7 +50,9 @@ export class CategoriesController {
         accessToken,
       );
 
-      res.status(200).json(categories);
+      const response = toCamelCase(categories);
+
+      res.status(200).json(response);
     } catch (err) {
       next(err);
     }

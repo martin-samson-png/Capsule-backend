@@ -1,4 +1,5 @@
 import { AppError } from "../../error/AppError";
+import { toCamelCase } from "../../utils/formatters";
 import { ProfileService } from "./profiles.service";
 import type { Request, Response, NextFunction } from "express";
 
@@ -18,7 +19,10 @@ export class ProfileController {
         userId,
         accessToken,
       );
-      res.status(200).json(me);
+
+      const response = toCamelCase(me);
+
+      res.status(200).json(response);
     } catch (err) {
       next(err);
     }
@@ -41,7 +45,10 @@ export class ProfileController {
         userId,
         accessToken,
       );
-      res.status(200).json(accounts);
+
+      const response = toCamelCase(accounts);
+
+      res.status(200).json(response);
     } catch (err) {
       next(err);
     }
