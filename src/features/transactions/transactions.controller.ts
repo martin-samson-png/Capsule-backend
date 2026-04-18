@@ -57,6 +57,27 @@ export class TransactionController {
     }
   };
 
+  getById = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { id: transactionId } = req.validateParams as { id: string };
+      const userId = req.userId;
+      const accessToken = req.accessToken;
+
+      if (!userId || !accessToken)
+        return next(AppError.unauthorized("Utilisateur non authentifié"));
+
+      const transaction = await this.transactionService.getById({
+        transactionId,
+        userId,
+        accessToken,
+      });
+
+      res.status(200).json(transaction);
+    } catch (err) {
+      next(err);
+    }
+  };
+
   update = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const accessToken = req.accessToken;

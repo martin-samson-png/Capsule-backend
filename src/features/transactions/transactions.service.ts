@@ -37,6 +37,12 @@ export interface FindTransaction {
   sortOrder: "asc" | "desc";
 }
 
+export interface FindTransactionById {
+  transactionId: string;
+  userId: string;
+  accessToken: string;
+}
+
 export interface UpdateTransaction {
   accessToken: string;
   transactionId: string;
@@ -178,6 +184,28 @@ export class TransactionService {
     const hasMore = data.length === input.limit;
 
     return { data: data ?? [], hasMore };
+  }
+
+  async getById(input: FindTransactionById) {
+    const supabaseUser = createSupabaseUserClient(input.accessToken);
+
+    const { data, error } = await supabaseUser
+      .from("transactions")
+      .select(
+        "id, date, amount_cents, label, type, account_id, from_account_id, to_account_id, category_id, goal_id",
+      )
+      .eq("user_id", input.userId)
+      .eq("id", input.transactionId)
+      .maybeSingle();
+
+    if (error)
+      throw AppError.internalServer(
+        "Erreur lors de la récupération des transactions",
+      );
+
+    if (!data) throw AppError.notFound("Transaction introuvable");
+
+    return data;
   }
 
   async update(input: UpdateTransaction) {

@@ -27,6 +27,15 @@ router.get(
   (req, res, next) => transactionController.getByUserId(req, res, next),
 );
 
+router.get(
+  "/:id",
+  requireAuth,
+  validate(idParamSchema, "params"),
+  (req, res, next) => {
+    transactionController.getById(req, res, next);
+  },
+);
+
 router.patch(
   "/:id",
   requireAuth,
