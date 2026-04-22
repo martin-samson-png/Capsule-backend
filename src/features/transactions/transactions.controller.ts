@@ -89,6 +89,15 @@ export class TransactionController {
 
   update = async (req: Request, res: Response, next: NextFunction) => {
     try {
+      console.log("🚀 --- APPEL AU CONTROLLER UPDATE ---");
+
+      // Teste de loguer directement l'objet req.body standard
+      console.log("Body brut (req.body):", req.body);
+      console.log("Params bruts (req.params):", req.params);
+
+      // Teste tes propriétés de validation
+      console.log("Body validé (req.validateBody):", req.validateBody);
+
       const accessToken = req.accessToken;
       if (!accessToken)
         return next(AppError.unauthorized("Utilisateur non authentifié"));
@@ -105,7 +114,7 @@ export class TransactionController {
         ...body,
       });
 
-      res.status(204).end();
+      res.status(200).json({ ok: true });
     } catch (err) {
       next(err);
     }

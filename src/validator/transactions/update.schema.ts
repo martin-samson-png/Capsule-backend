@@ -14,7 +14,7 @@ export const transactionUpdateSchema = Joi.object({
     "string.base": "categoryId doit être une chaîne de caractères.",
     "string.guid": "categoryId doit être un UUID valide.",
   }),
-  label: Joi.string().min(1).allow(null).optional().messages({
+  label: Joi.string().allow(null).optional().messages({
     "string.base": "Le libellé doit être une chaîne de caractères.",
     "string.min": "Le libellé doit contenir au moins 1 caractère.",
   }),
