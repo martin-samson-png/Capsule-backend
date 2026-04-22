@@ -33,7 +33,6 @@ export const validate =
     });
 
     if (error) {
-      console.log("Détails de l'erreur Joi:", error.details);
       const err = AppError.badRequest(
         error.details.map((d) => d.message).join(", "),
       );
