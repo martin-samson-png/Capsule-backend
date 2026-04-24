@@ -105,7 +105,7 @@ export class TransactionController {
         ...body,
       });
 
-      res.status(200).json({ ok: true });
+      res.status(204).end();
     } catch (err) {
       next(err);
     }
