@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { Router, Response, Request, NextFunction } from "express";
 import { TransactionService } from "./transactions.service.js";
 import { TransactionController } from "./transactions.controller.js";
 import { requireAuth } from "../../middleware/requireAuth.js";
@@ -17,21 +17,23 @@ router.post(
   "/create",
   requireAuth,
   validate(transactionCreateSchema),
-  (req, res, next) => transactionController.create(req, res, next),
+  (req: Request, res: Response, next: NextFunction) =>
+    transactionController.create(req, res, next),
 );
 
 router.get(
   "/",
   requireAuth,
   validate(transactionFindSchema, "query"),
-  (req, res, next) => transactionController.getByUserId(req, res, next),
+  (req: Request, res: Response, next: NextFunction) =>
+    transactionController.getByUserId(req, res, next),
 );
 
 router.get(
   "/:id",
   requireAuth,
   validate(idParamSchema, "params"),
-  (req, res, next) => {
+  (req: Request, res: Response, next: NextFunction) => {
     transactionController.getById(req, res, next);
   },
 );
@@ -41,7 +43,7 @@ router.patch(
   requireAuth,
   validate(transactionUpdateSchema),
   validate(idParamSchema, "params"),
-  (req, res, next) => {
+  (req: Request, res: Response, next: NextFunction) => {
     transactionController.update(req, res, next);
   },
 );
@@ -50,7 +52,7 @@ router.delete(
   "/:id",
   requireAuth,
   validate(idParamSchema, "params"),
-  (req, res, next) => {
+  (req: Request, res: Response, next: NextFunction) => {
     transactionController.delete(req, res, next);
   },
 );

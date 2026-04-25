@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { Response, Request, NextFunction, Router } from "express";
 import { GoalsService } from "./goals.service.js";
 import { GoalsController } from "./goals.controller.js";
 import { requireAuth } from "../../middleware/requireAuth.js";
@@ -17,7 +17,7 @@ router.post(
   "/create",
   requireAuth,
   validate(goalCreateSchema),
-  (req, res, next) => {
+  (req: Request, res: Response, next: NextFunction) => {
     goalsController.create(req, res, next);
   },
 );
@@ -26,7 +26,8 @@ router.get(
   "/",
   requireAuth,
   validate(goalFindSchema, "query"),
-  (req, res, next) => goalsController.getByUserId(req, res, next),
+  (req: Request, res: Response, next: NextFunction) =>
+    goalsController.getByUserId(req, res, next),
 );
 
 router.patch(
@@ -34,14 +35,16 @@ router.patch(
   requireAuth,
   validate(goalUpdateSchema),
   validate(idParamSchema, "params"),
-  (req, res, next) => goalsController.update(req, res, next),
+  (req: Request, res: Response, next: NextFunction) =>
+    goalsController.update(req, res, next),
 );
 
 router.delete(
   "/:id",
   requireAuth,
   validate(idParamSchema, "params"),
-  (req, res, next) => goalsController.delete(req, res, next),
+  (req: Request, res: Response, next: NextFunction) =>
+    goalsController.delete(req, res, next),
 );
 
 export default router;
