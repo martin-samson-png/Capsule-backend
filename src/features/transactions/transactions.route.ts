@@ -1,12 +1,12 @@
 import { Router } from "express";
-import { TransactionService } from "./transactions.service";
-import { TransactionController } from "./transactions.controller";
-import { requireAuth } from "../../middleware/requireAuth";
-import { validate } from "../../middleware/validate";
-import { transactionCreateSchema } from "../../validator/transactions/create.schema";
-import { transactionFindSchema } from "../../validator/transactions/find.schema";
-import { transactionUpdateSchema } from "../../validator/transactions/update.schema";
-import { idParamSchema } from "../../validator/common/idParams.schema";
+import { TransactionService } from "./transactions.service.js";
+import { TransactionController } from "./transactions.controller.js";
+import { requireAuth } from "../../middleware/requireAuth.js";
+import { validate } from "../../middleware/validate.js";
+import { transactionCreateSchema } from "../../validator/transactions/create.schema.js";
+import { transactionFindSchema } from "../../validator/transactions/find.schema.js";
+import { transactionUpdateSchema } from "../../validator/transactions/update.schema.js";
+import { idParamSchema } from "../../validator/common/idParams.schema.js";
 
 const router = Router();
 

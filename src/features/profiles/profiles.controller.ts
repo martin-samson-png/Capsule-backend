@@ -1,6 +1,6 @@
-import { AppError } from "../../error/AppError";
-import { toCamelCase } from "../../utils/formatters";
-import { ProfileService } from "./profiles.service";
+import { AppError } from "../../error/AppError.js";
+import { toCamelCase } from "../../utils/formatters.js";
+import { ProfileService } from "./profiles.service.js";
 import type { Request, Response, NextFunction } from "express";
 
 export class ProfileController {

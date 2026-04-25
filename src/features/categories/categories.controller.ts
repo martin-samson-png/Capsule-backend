@@ -3,9 +3,9 @@ import {
   CategoriesService,
   CreateCategory,
   UpdateCategory,
-} from "./categories.service";
-import { AppError } from "../../error/AppError";
-import { toCamelCase } from "../../utils/formatters";
+} from "./categories.service.js";
+import { AppError } from "../../error/AppError.js";
+import { toCamelCase } from "../../utils/formatters.js";
 
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}

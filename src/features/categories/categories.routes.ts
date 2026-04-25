@@ -1,11 +1,11 @@
 import { Router } from "express";
-import { requireAuth } from "../../middleware/requireAuth";
-import { validate } from "../../middleware/validate";
-import { categoryCreateSchema } from "../../validator/categories/create.schema";
-import { CategoriesService } from "./categories.service";
-import { CategoriesController } from "./categories.controller";
-import { idParamSchema } from "../../validator/common/idParams.schema";
-import { categoryUpdateSchema } from "../../validator/categories/update.schema";
+import { requireAuth } from "../../middleware/requireAuth.js";
+import { validate } from "../../middleware/validate.js";
+import { categoryCreateSchema } from "../../validator/categories/create.schema.js";
+import { CategoriesService } from "./categories.service.js";
+import { CategoriesController } from "./categories.controller.js";
+import { idParamSchema } from "../../validator/common/idParams.schema.js";
+import { categoryUpdateSchema } from "../../validator/categories/update.schema.js";
 
 const router = Router();
 

@@ -1,6 +1,6 @@
-import { supabase } from "../config/supabase";
+import { supabase } from "../config/supabase.js";
 import type { Request, Response, NextFunction } from "express";
-import { AppError } from "../error/AppError";
+import { AppError } from "../error/AppError.js";
 
 export const requireAuth = async (
   req: Request,

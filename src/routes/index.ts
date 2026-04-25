@@ -1,8 +1,8 @@
 import { Router } from "express";
-import profileRouter from "../features/profiles/profiles.route";
-import transactionRouter from "../features/transactions/transactions.route";
-import goalRouter from "../features/goals/goals.route";
-import categoryRouter from "../features/categories/categories.routes";
+import profileRouter from "../features/profiles/profiles.route.js";
+import transactionRouter from "../features/transactions/transactions.route.js";
+import goalRouter from "../features/goals/goals.route.js";
+import categoryRouter from "../features/categories/categories.routes.js";
 
 export const router = Router();
 

@@ -1,8 +1,8 @@
 import { SupabaseClient } from "@supabase/supabase-js";
-import { mapPgErrorToAppError } from "./error.utils";
-import { AppError } from "../error/AppError";
-import { TransactionRpcMap } from "../features/transactions/transactions.types";
-import { GoalRpcMap } from "../features/goals/goals.types";
+import { mapPgErrorToAppError } from "./error.utils.js";
+import { AppError } from "../error/AppError.js";
+import { TransactionRpcMap } from "../features/transactions/transactions.types.js";
+import { GoalRpcMap } from "../features/goals/goals.types.js";
 
 export type RpcMap = TransactionRpcMap & GoalRpcMap;
 

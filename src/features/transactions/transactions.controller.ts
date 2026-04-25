@@ -1,11 +1,11 @@
-import { AppError } from "../../error/AppError";
-import { toCamelCase } from "../../utils/formatters";
+import { AppError } from "../../error/AppError.js";
+import { toCamelCase } from "../../utils/formatters.js";
 import {
   CreateTransaction,
   FindTransaction,
   TransactionService,
   UpdateTransaction,
-} from "./transactions.service";
+} from "./transactions.service.js";
 import type { Request, Response, NextFunction } from "express";
 
 export class TransactionController {

@@ -1,8 +1,8 @@
-import { createSupabaseUserClient } from "../../config/supabase";
-import { AppError } from "../../error/AppError";
-import { convertToPgDate } from "../../utils/date";
-import { euroToCents } from "../../utils/money";
-import { rpcVoid } from "../../utils/rpc";
+import { createSupabaseUserClient } from "../../config/supabase.js";
+import { AppError } from "../../error/AppError.js";
+import { convertToPgDate } from "../../utils/date.js";
+import { euroToCents } from "../../utils/money.js";
+import { rpcVoid } from "../../utils/rpc.js";
 
 export type GoalStatus = "active" | "completed" | "archived";
 

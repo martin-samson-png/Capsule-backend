@@ -4,9 +4,9 @@ import {
   FindGoal,
   GoalsService,
   UpdateGoal,
-} from "./goals.service";
-import { AppError } from "../../error/AppError";
-import { toCamelCase } from "../../utils/formatters";
+} from "./goals.service.js";
+import { AppError } from "../../error/AppError.js";
+import { toCamelCase } from "../../utils/formatters.js";
 
 export class GoalsController {
   constructor(private readonly goalsService: GoalsService) {}

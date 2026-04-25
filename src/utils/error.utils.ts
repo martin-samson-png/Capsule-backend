@@ -1,5 +1,5 @@
 import { PostgrestError } from "@supabase/supabase-js";
-import { AppError } from "../error/AppError";
+import { AppError } from "../error/AppError.js";
 
 export const mapPgErrorToAppError = (err: PostgrestError) => {
   if (err.code === "23514" && err.message?.includes("chl_balance_noneg")) {

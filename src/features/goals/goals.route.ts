@@ -1,12 +1,12 @@
 import { Router } from "express";
-import { GoalsService } from "./goals.service";
-import { GoalsController } from "./goals.controller";
-import { requireAuth } from "../../middleware/requireAuth";
-import { validate } from "../../middleware/validate";
-import { goalCreateSchema } from "../../validator/goals/create.schema";
-import { goalFindSchema } from "../../validator/goals/find.schema";
-import { goalUpdateSchema } from "../../validator/goals/update.schema";
-import { idParamSchema } from "../../validator/common/idParams.schema";
+import { GoalsService } from "./goals.service.js";
+import { GoalsController } from "./goals.controller.js";
+import { requireAuth } from "../../middleware/requireAuth.js";
+import { validate } from "../../middleware/validate.js";
+import { goalCreateSchema } from "../../validator/goals/create.schema.js";
+import { goalFindSchema } from "../../validator/goals/find.schema.js";
+import { goalUpdateSchema } from "../../validator/goals/update.schema.js";
+import { idParamSchema } from "../../validator/common/idParams.schema.js";
 
 const goalsService = new GoalsService();
 const goalsController = new GoalsController(goalsService);

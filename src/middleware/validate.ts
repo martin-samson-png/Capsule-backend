@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
 import Joi from "joi";
-import { AppError } from "../error/AppError";
+import { AppError } from "../error/AppError.js";
 
 type ValidateTarget = "body" | "params" | "query";
 

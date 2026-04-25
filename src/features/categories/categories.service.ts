@@ -1,5 +1,5 @@
-import { createSupabaseUserClient } from "../../config/supabase";
-import { AppError } from "../../error/AppError";
+import { createSupabaseUserClient } from "../../config/supabase.js";
+import { AppError } from "../../error/AppError.js";
 
 export interface CreateCategory {
   userId: string;
