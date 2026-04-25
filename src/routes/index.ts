@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { Router, Request, Response } from "express";
 import profileRouter from "../features/profiles/profiles.route.js";
 import transactionRouter from "../features/transactions/transactions.route.js";
 import goalRouter from "../features/goals/goals.route.js";
@@ -14,6 +14,6 @@ router.use("/goal", goalRouter);
 
 router.use("/category", categoryRouter);
 
-router.get("/health", (_req, res) => {
+router.get("/health", (_req: Request, res: Response) => {
   res.json({ status: "ok" });
 });
