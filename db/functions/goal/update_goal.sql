@@ -4,7 +4,8 @@ create or replace function public.update_goal(
   p_target_amount_cents bigint,
   p_deadline date,
   p_status text,
-  p_set_deadline boolean default false
+  p_set_deadline boolean default false,
+  p_icon text
 )
 returns void
 language plpgsql
@@ -29,7 +30,7 @@ begin
 
 
   if p_label is null and p_target_amount_cents is null and p_status is null
-  and p_set_deadline is false then raise exception using
+  and p_set_deadline is false and p_icon is null then raise exception using
     errcode = 'P0002',
     message = 'Aucun champ à mettre à jour';
   end if;
@@ -71,7 +72,8 @@ begin
     target_amount_cents = v_new_target_amount_cents,
     label = coalesce(p_label, g.label),
     deadline = case when p_set_deadline then p_deadline else g.deadline end,
-    status = v_new_status
+    status = v_new_status,
+    icon = coalesce(p_icon, g.icon)
   where g.id = p_id and g.user_id = v_uid;
 
 end;

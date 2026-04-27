@@ -12,6 +12,7 @@ export interface CreateGoal {
   label: string;
   targetAmount: number;
   deadline: Date;
+  icon: string;
 }
 
 export interface FindGoal {
@@ -34,6 +35,7 @@ export interface UpdateGoal {
   targetAmount?: number;
   status?: string;
   deadline?: string;
+  icon?: string;
 }
 
 export class GoalsService {
@@ -49,6 +51,7 @@ export class GoalsService {
         label: input.label,
         target_amount_cents: targetAmountCents,
         deadline: pgDeadline,
+        icon: input.icon,
       })
       .select(
         "id, label , target_amount_cents, current_amount_cents, deadline, status, created_at",
@@ -131,6 +134,8 @@ export class GoalsService {
     if (Object.keys(patch).length === 0)
       throw AppError.badRequest("Aucun champ à mettre à jour");
 
+    console.log(body);
+
     const setDeadline = Object.hasOwn(input, "deadline");
 
     if (input.deadline !== undefined)
@@ -146,6 +151,7 @@ export class GoalsService {
       p_deadline: pgDeadline ?? null,
       p_status: input.status ?? null,
       p_set_deadline: setDeadline,
+      p_icon: input.icon ?? null,
     });
 
     return { ok: true };

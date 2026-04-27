@@ -15,9 +15,14 @@ export const goalUpdateSchema = Joi.object({
     "date.format": "La deadline doit être au format ISO.",
     "date.greater": "La deadline doit être dans le futur",
   }),
-  status: Joi.string().valid("active", "completed", "cancelled").messages({
+  status: Joi.string().valid("active", "completed", "archived").messages({
     "string.base": "Le status doit être une chaîne",
     "any.only": "Status invalide",
+  }),
+  icon: Joi.string().min(1).max(50).optional().messages({
+    "string.base": "L'icône doit être une chaîne de caractères",
+    "string.empty": "L'icône ne peut pas être vide",
+    "string.max": "Le nom de l'icône est trop long",
   }),
 })
   .min(1)

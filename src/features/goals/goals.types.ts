@@ -5,6 +5,7 @@ type UpdateGoalRpc = {
   p_deadline: string | null;
   p_status: string | null;
   p_set_deadline: boolean;
+  p_icon: string | null;
 };
 
 type DeleteGoalRpc = {

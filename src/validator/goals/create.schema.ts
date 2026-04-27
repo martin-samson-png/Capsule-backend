@@ -17,4 +17,10 @@ export const goalCreateSchema = Joi.object({
     "date.format": "La date doit être au format ISO.",
     "date.greater": "La date doit être dans le futur",
   }),
+  icon: Joi.string().required().min(1).max(50).messages({
+    "any.required": "L'icône est obligatoire",
+    "string.empty": "Veuillez choisir une icône",
+    "string.min": "Le nom de l'icône est invalide",
+    "string.max": "Le nom de l'icône est trop long",
+  }),
 });
