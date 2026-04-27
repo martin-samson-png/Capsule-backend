@@ -54,7 +54,7 @@ export class GoalsService {
         icon: input.icon,
       })
       .select(
-        "id, label , target_amount_cents, current_amount_cents, deadline, status, created_at",
+        "id, label , target_amount_cents, current_amount_cents, deadline, status, icon, created_at",
       )
       .single();
 
@@ -89,7 +89,7 @@ export class GoalsService {
     let query = supabaseUser
       .from("goals")
       .select(
-        "id, label , target_amount_cents, current_amount_cents, deadline, status, created_at",
+        "id, label , target_amount_cents, current_amount_cents, deadline, status, icon, created_at",
       )
       .eq("user_id", input.userId);
 
